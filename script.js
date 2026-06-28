@@ -22,7 +22,13 @@ const roads = [
   [380,83,540,150],[540,150,666,290]
 ];
 
-const state = { player:{x:380,y:290,r:11}, keys:{}, collected:new Set(), closed:new Map(), started:0, elapsed:0, won:false, dialogUntil:0, raf:0, last:0 };
+const state = { playerName:'SHIVAM', avatar:0, player:{x:380,y:290,r:11}, keys:{}, collected:new Set(), closed:new Map(), started:0, elapsed:0, won:false, dialogUntil:0, raf:0, last:0 };
+const avatars = [
+  { className:'avatar-blue', shirt:'#20e0e8', hair:'#17213b' },
+  { className:'avatar-red', shirt:'#ff477e', hair:'#4a251e' },
+  { className:'avatar-green', shirt:'#40f59b', hair:'#d97736' },
+  { className:'avatar-purple', shirt:'#bd7cff', hair:'#070914' }
+];
 const closureReasons = { print:'OUT OF PAPER', labs:'MAINTENANCE', library:'STOCK CHECK', finance:'SERVER DOWN', teacher:'IN A MEETING' };
 
 function distanceToSegment(px,py,x1,y1,x2,y2){
@@ -42,6 +48,25 @@ function resetGame(){
   setMessage('Find the Print Shop and collect your No Due Form.');updateUI();state.raf=requestAnimationFrame(loop);
 }
 
+function showLogin(){
+  cancelAnimationFrame(state.raf);state.keys={};
+  document.getElementById('loginScreen').classList.remove('hidden');
+  const input=document.getElementById('playerName');
+  input.value=state.playerName==='SHIVAM'?'':state.playerName;
+  document.querySelector(`input[name="avatar"][value="${state.avatar}"]`).checked=true;
+  setTimeout(()=>input.focus(),0);
+}
+
+function beginQuest(name,avatar){
+  state.playerName=name.trim().replace(/\s+/g,' ').toUpperCase();
+  state.avatar=Number(avatar);
+  document.getElementById('profileName').textContent=state.playerName;
+  document.getElementById('winnerName').textContent=state.playerName;
+  document.getElementById('profileAvatar').className=`portrait ${avatars[state.avatar].className}`;
+  document.getElementById('loginScreen').classList.add('hidden');
+  resetGame();
+}
+
 function update(dt){
   if(state.won)return;
   const now=performance.now();state.elapsed=(now-state.started)/1000;
@@ -57,8 +82,9 @@ function checkDepartment(now){
     if(state.closed.has(d.id)){if(now>state.dialogUntil)showDialogue('CAMPUS ALERT',`${d.name} is temporarily closed. Find another route and return later.`,'!');return;}
     if(state.collected.has(d.id))return;
     if(d.id!=='print'&&!state.collected.has('print')){if(now>state.dialogUntil)showDialogue(d.name,'Collect the No Due Form from the Print Shop first.','?');return;}
-    if(d.id==='hod'&&state.collected.size<5){if(now>state.dialogUntil)showDialogue('HOD','Get all signatures first, Shivam.','H');return;}
-    state.collected.add(d.id);showDialogue(d.id==='teacher'?'CLASS TEACHER':d.name,d.message,d.icon);setMessage(d.id==='hod'?'Certificate approved!':`${d.name} signed. Continue to the next department.`);
+    if(d.id==='hod'&&state.collected.size<5){if(now>state.dialogUntil)showDialogue('HOD',`Get all signatures first, ${titleName()}.`,'H');return;}
+    const message=d.id==='hod'?`Congratulations, ${titleName()}! Your No Due Certificate is approved.`:d.message;
+    state.collected.add(d.id);showDialogue(d.id==='teacher'?'CLASS TEACHER':d.name,message,d.icon);setMessage(d.id==='hod'?'Certificate approved!':`${d.name} signed. Continue to the next department.`);
     if(d.id==='hod')win();return;
   }
 }
@@ -69,6 +95,7 @@ function showDialogue(speaker,text,icon){
   clearTimeout(state.dialogTimer);state.dialogTimer=setTimeout(()=>document.getElementById('dialogue').classList.add('hidden'),2800);
 }
 function setMessage(text){document.getElementById('messageBox').textContent=text;}
+function titleName(){return state.playerName.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase());}
 function win(){state.won=true;document.getElementById('finalTime').textContent=fmt(state.elapsed);setTimeout(()=>document.getElementById('winScreen').classList.remove('hidden'),900);}
 
 function updateUI(){
@@ -99,12 +126,19 @@ function drawDepartment(d){
   if(done){ctx.fillStyle='#40f59b';ctx.beginPath();ctx.arc(x+w-5,y+4,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#071126';ctx.font='15px VT323';ctx.fillText('✓',x+w-5,y+9)}
 }
 function drawPlayer(){
-  const p=state.player;ctx.save();ctx.translate(Math.round(p.x),Math.round(p.y));ctx.fillStyle='#071126';ctx.fillRect(-10,10,20,4);ctx.fillStyle='#e8a56b';ctx.fillRect(-6,-17,12,9);ctx.fillStyle='#18223b';ctx.fillRect(-8,-20,16,5);ctx.fillStyle='#20e0e8';ctx.fillRect(-9,-8,18,17);ctx.fillStyle='#ff477e';ctx.fillRect(7,-7,7,16);ctx.fillStyle='#dae6f5';ctx.fillRect(-8,9,6,8);ctx.fillRect(3,9,6,8);ctx.restore();
-  ctx.fillStyle='#ffd43b';ctx.font='13px Press Start 2P';ctx.textAlign='center';ctx.fillText('SHIVAM',p.x,p.y-29);
+  const p=state.player,a=avatars[state.avatar];ctx.save();ctx.translate(Math.round(p.x),Math.round(p.y));ctx.fillStyle='#071126';ctx.fillRect(-10,10,20,4);ctx.fillStyle='#e8a56b';ctx.fillRect(-6,-17,12,9);ctx.fillStyle=a.hair;ctx.fillRect(-8,-20,16,5);ctx.fillStyle=a.shirt;ctx.fillRect(-9,-8,18,17);ctx.fillStyle='#ffb02e';ctx.fillRect(7,-7,7,16);ctx.fillStyle='#dae6f5';ctx.fillRect(-8,9,6,8);ctx.fillRect(3,9,6,8);ctx.restore();
+  ctx.fillStyle='#ffd43b';ctx.font='13px Press Start 2P';ctx.textAlign='center';ctx.fillText(state.playerName,p.x,p.y-29);
 }
 function loop(t){const dt=Math.min(.035,(t-(state.last||t))/1000);state.last=t;update(dt);draw();state.raf=requestAnimationFrame(loop);}
 
 window.addEventListener('keydown',e=>{if(e.key.startsWith('Arrow')){e.preventDefault();state.keys[e.key]=true;}});window.addEventListener('keyup',e=>state.keys[e.key]=false);
-document.querySelectorAll('[data-dir]').forEach(btn=>{const key={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'}[btn.dataset.dir];const on=e=>{e.preventDefault();state.keys[key]=true},off=e=>{e.preventDefault();state.keys[key]=false};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);});
-document.getElementById('newGame').addEventListener('click',resetGame);document.getElementById('playAgain').addEventListener('click',resetGame);
-resetGame();
+document.querySelectorAll('[data-dir]').forEach(btn=>{const key={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'}[btn.dataset.dir];const on=e=>{e.preventDefault();btn.setPointerCapture?.(e.pointerId);state.keys[key]=true},off=e=>{e.preventDefault();state.keys[key]=false};btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointercancel',off);btn.addEventListener('lostpointercapture',off);});
+document.getElementById('loginForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('playerName').value.trim();
+  if(name.length<2){document.getElementById('nameError').textContent='NAME MUST HAVE AT LEAST 2 CHARACTERS';return;}
+  const avatar=document.querySelector('input[name="avatar"]:checked').value;
+  document.getElementById('nameError').textContent='';beginQuest(name,avatar);
+});
+document.getElementById('newGame').addEventListener('click',showLogin);document.getElementById('playAgain').addEventListener('click',resetGame);
+draw();

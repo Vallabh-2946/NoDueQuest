@@ -7,18 +7,50 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <section id="loginScreen" class="login-screen" aria-labelledby="loginTitle">
+    <form id="loginForm" class="login-card">
+      <div class="login-badge">NDC</div>
+      <p class="eyebrow">ATRIA CAMPUS ARCADE</p>
+      <h2 id="loginTitle">NO DUE QUEST</h2>
+      <p class="login-copy">IDENTIFY YOURSELF, STUDENT</p>
+      <label for="playerName">ENTER YOUR NAME</label>
+      <input id="playerName" name="playerName" maxlength="18" autocomplete="name" placeholder="e.g. SHIVAM" required autofocus>
+      <fieldset class="avatar-picker">
+        <legend>CHOOSE YOUR AVATAR</legend>
+        <label class="avatar-option">
+          <input type="radio" name="avatar" value="0" checked>
+          <span class="avatar-preview avatar-blue"><i></i></span><b>ACE</b>
+        </label>
+        <label class="avatar-option">
+          <input type="radio" name="avatar" value="1">
+          <span class="avatar-preview avatar-red"><i></i></span><b>BLAZE</b>
+        </label>
+        <label class="avatar-option">
+          <input type="radio" name="avatar" value="2">
+          <span class="avatar-preview avatar-green"><i></i></span><b>NOVA</b>
+        </label>
+        <label class="avatar-option">
+          <input type="radio" name="avatar" value="3">
+          <span class="avatar-preview avatar-purple"><i></i></span><b>PIXEL</b>
+        </label>
+      </fieldset>
+      <p id="nameError" class="name-error" aria-live="polite"></p>
+      <button class="pixel-button login-button" type="submit">CONTINUE ▶</button>
+      <small>PRESS ENTER TO START</small>
+    </form>
+  </section>
   <main class="arcade-shell">
     <header class="masthead">
       <div class="coin">ND</div>
-      <div><p class="eyebrow">CAMPUS ARCADE PRESENTS</p><h1>NO DUE QUEST</h1></div>
+      <div><p class="eyebrow">ATRIA CAMPUS PRESENTS</p><h1>NO DUE QUEST</h1></div>
       <button id="newGame" class="pixel-button">NEW GAME</button>
     </header>
 
     <section class="game-layout">
       <aside class="panel profile-panel">
         <h2>PLAYER 01</h2>
-        <div class="portrait" aria-label="Pixel portrait of Shivam"><span>🎒</span></div>
-        <h3>SHIVAM</h3>
+        <div id="profileAvatar" class="portrait avatar-blue" aria-label="Selected student avatar"><span class="portrait-face"></span></div>
+        <h3 id="profileName">SHIVAM</h3>
         <p class="student-id">ENGINEERING STUDENT</p>
         <div class="stat"><span>SIGNATURES</span><strong id="signatureCount">0 / 6</strong></div>
         <div class="progress-track"><div id="progressBar"></div></div>
@@ -31,7 +63,7 @@
       </aside>
 
       <section class="map-panel">
-        <div class="map-heading"><span>GNIT CAMPUS // GRAPH G(V,E)</span><span id="mapStatus">QUEST READY</span></div>
+        <div class="map-heading"><span>ATRIA CAMPUS // GRAPH G(V,E)</span><span id="mapStatus">QUEST READY</span></div>
         <div class="canvas-wrap">
           <canvas id="gameCanvas" width="760" height="650" aria-label="Interactive campus graph map"></canvas>
           <div id="dialogue" class="dialogue hidden" role="status">
@@ -42,13 +74,17 @@
             <p class="eyebrow">QUEST COMPLETE</p>
             <h2>CONGRATULATIONS!</h2>
             <h3>NO DUE CERTIFICATE<br>COMPLETED</h3>
+            <p class="winner-name" id="winnerName">SHIVAM</p>
             <div class="certificate">✓</div>
             <p>TIME <strong id="finalTime">00:00</strong> · SIGNATURES <strong>6 / 6</strong></p>
             <button id="playAgain" class="pixel-button">PLAY AGAIN</button>
           </div>
-        </div>
-        <div class="mobile-controls" aria-label="Touch movement controls">
-          <button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div>
+          <div class="mobile-controls" aria-label="Touch movement controls">
+            <button class="dpad-up" data-dir="up" aria-label="Move up">▲</button>
+            <button class="dpad-left" data-dir="left" aria-label="Move left">◀</button>
+            <button class="dpad-down" data-dir="down" aria-label="Move down">▼</button>
+            <button class="dpad-right" data-dir="right" aria-label="Move right">▶</button>
+          </div>
         </div>
       </section>
 
