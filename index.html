@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No Due Quest</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="arcade-shell">
+    <header class="masthead">
+      <div class="coin">ND</div>
+      <div><p class="eyebrow">CAMPUS ARCADE PRESENTS</p><h1>NO DUE QUEST</h1></div>
+      <button id="newGame" class="pixel-button">NEW GAME</button>
+    </header>
+
+    <section class="game-layout">
+      <aside class="panel profile-panel">
+        <h2>PLAYER 01</h2>
+        <div class="portrait" aria-label="Pixel portrait of Shivam"><span>🎒</span></div>
+        <h3>SHIVAM</h3>
+        <p class="student-id">ENGINEERING STUDENT</p>
+        <div class="stat"><span>SIGNATURES</span><strong id="signatureCount">0 / 6</strong></div>
+        <div class="progress-track"><div id="progressBar"></div></div>
+        <div class="form-status"><span>FORM</span><strong id="formStatus">NOT COLLECTED</strong></div>
+        <h2>CONTROLS</h2>
+        <div class="keys" aria-label="Arrow key controls">
+          <kbd>↑</kbd><div><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></div>
+        </div>
+        <p class="tiny">MOVE ON ROADS · ENTER BUILDINGS</p>
+      </aside>
+
+      <section class="map-panel">
+        <div class="map-heading"><span>GNIT CAMPUS // GRAPH G(V,E)</span><span id="mapStatus">QUEST READY</span></div>
+        <div class="canvas-wrap">
+          <canvas id="gameCanvas" width="760" height="650" aria-label="Interactive campus graph map"></canvas>
+          <div id="dialogue" class="dialogue hidden" role="status">
+            <div id="speakerIcon" class="speaker-icon">!</div>
+            <div><strong id="speaker">SYSTEM</strong><p id="dialogueText"></p></div>
+          </div>
+          <div id="winScreen" class="win-screen hidden">
+            <p class="eyebrow">QUEST COMPLETE</p>
+            <h2>CONGRATULATIONS!</h2>
+            <h3>NO DUE CERTIFICATE<br>COMPLETED</h3>
+            <div class="certificate">✓</div>
+            <p>TIME <strong id="finalTime">00:00</strong> · SIGNATURES <strong>6 / 6</strong></p>
+            <button id="playAgain" class="pixel-button">PLAY AGAIN</button>
+          </div>
+        </div>
+        <div class="mobile-controls" aria-label="Touch movement controls">
+          <button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div>
+        </div>
+      </section>
+
+      <aside class="panel status-panel">
+        <div class="timer-box"><span>MISSION TIME</span><strong id="timer">00:00</strong></div>
+        <h2>OBSTACLES</h2>
+        <div id="obstacleList" class="obstacle-list"></div>
+        <h2>QUEST LOG</h2>
+        <ol id="questList" class="quest-list"></ol>
+        <h2>MESSAGE</h2>
+        <div id="messageBox" class="message-box">Find the Print Shop and collect your No Due Form.</div>
+      </aside>
+    </section>
+
+    <section class="theory-panel">
+      <div><span class="theory-icon">▣</span><strong>BUILDINGS</strong><small>Vertices</small></div>
+      <div><span class="theory-icon">═</span><strong>ROADS</strong><small>Edges</small></div>
+      <div><span class="theory-icon">➜</span><strong>TRAVELLING</strong><small>Path</small></div>
+      <div><span class="theory-icon">🔒</span><strong>CLOSED DEPT.</strong><small>Removed Vertex</small></div>
+      <div><span class="theory-icon">↻</span><strong>DETOUR</strong><small>Connected Graph</small></div>
+      <div><span class="theory-icon">★</span><strong>VISIT ALL</strong><small>Hamilton Path</small></div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
